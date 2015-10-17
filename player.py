@@ -7,30 +7,34 @@ import card
 
 class Player(object):
     def __init__(self, name="Player", money=0):
-        self.hand = []
         self.name = name
-        self.pocket = money
+        self.pocket = money #dont mess with pocket!
+        self.table = 0
 
     def __str__(self):
-        return "{} ({}€)".format(self.name, self.pocket)
+        return "{} ({}€)".format(self.name, self.pocket-self.table)
 
     def __repr__(self):
         return self.__str__()
-
-    def getHand(self):
-        return self.hand
 
     def payback(self, prize):
         """ receives bet + premium
             or 0 if player lost
         """
+        self.table = 0
         self.pocket += prize
+
+# re-implement all the next methods
+    def debug_state(self, dealer, players):
+        print "Dealer: ", dealer, card.value(dealer.hand)
+        for p in players:
+            print p.player.name, p.hand, card.value(p.hand)
 
     def play(self, dealer, players):
         """ Calculates decision to take
             Must be either "h" or "s"
         """
-        print "DEALER: ", dealer
+        self.debug_state(dealer, players)
         return raw_input("(h)it or (s)tand  ")
 
     def bet(self, dealer, players):
@@ -40,10 +44,10 @@ class Player(object):
             players - list of players state
             bet (int value)
         """
-        print "DEALER: ", dealer
+        self.debug_state(dealer, players)
         try:
             bet = int(raw_input("bet: "))
         except Exception, e:
             bet = 1
-        self.pocket-=bet
+        self.table = bet
         return bet

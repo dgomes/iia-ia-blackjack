@@ -18,6 +18,7 @@ class Game(object):
             self.bet = 0
             self.hand = []
             self.bust = False
+            self.done = False
         def copy(self):
             return copy.deepcopy(self)
         def __str__(self):
@@ -30,10 +31,17 @@ class Game(object):
             h = self.copy()
             h.hand = h.hand[1:]
             return h
+        def take_bet(self, state):
+            bet = 0
+            while bet <=0 or (bet>self.bet and self.bet!=0):      #bets can't be 0 nor can't they be more than double the existing bet
+                bet = self.player.bet(state[0].hide_card(), state[1:])
+            self.bet += bet
 
-    def __init__(self, players, shoe_size=4, debug=False):
-#       print(chr(27) + "[2J")
-        print("-"*80)
+    def __init__(self, players, shoe_size=4, debug=False, verbose=True):
+        if verbose:
+    #       print(chr(27) + "[2J")
+            print("-"*80)
+        self.verbose = verbose
         self.debug = debug
         self.shoe = card.Shoe(shoe_size)
         self.shoe.shuffle()
@@ -79,29 +87,34 @@ class Game(object):
         if self.debug:
             print(self)
         for p in self.state[1:]:
-            bet = 0
-            while bet <=0:
-                bet = p.player.bet(self.state[0].hide_card(), self.state[1:])
-            p.bet = bet
+            p.take_bet(self.state)
 
     def loop(self):
+        turn = 0
         while not self.done:
+            turn += 1
             hits = 0
             for p in self.state:
-                if p.bust:  #skip bust players
+                if p.bust or p.done or card.value(p.hand) == 21:  #skip bust players, players who have double down and players who already have blackjack!
                     continue
 
                 if self.debug:
-                    print("TURN: " + p.player.name)
+                    print("TURN {}: {}".format(turn, p.player.name))
                     print(self)
                 action = ""
-                while action not in ["h", "s"]:
+                while action not in ["h", "s", "d"]:
                     if isinstance(p.player, Dealer):
                         action = p.player.play(self.state[0], self.state[1:])
                     else:
                         action = p.player.play(self.state[0].hide_card(), self.state[1:])
+                    if action == "d" and turn != 1:
+                        action = ""
+                
+                if action == "d":
+                    p.take_bet(self.state)
+                    p.done = True
 
-                if action == "h":
+                if action in ["h", "d"]:
                     p.hand+=self.deal(1)
                     hits +=1
 
@@ -133,6 +146,7 @@ class Game(object):
         self.take_bets()
         winners = self.loop()
         self.payback(winners)
-        print(self)
-        print("🏆    Winners: "+str(winners))
+        if self.verbose:
+            print(self)
+            print("🏆    Winners: "+str(winners))
 

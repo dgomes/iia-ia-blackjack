@@ -4,7 +4,7 @@ from randomplayer import RandomPlayer
 
 if __name__ == '__main__':
 
-    players = [RandomPlayer("Human",100)]
+    players = [Player("Human",100)]
 
     for i in range(100):
         print players

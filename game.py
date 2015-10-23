@@ -7,7 +7,7 @@ __version__ = "0.1"
 import copy
 import card
 from dealer import Dealer
-from player import Player 
+from player import Player
 
 BET_MULTIPLIER = 2
 
@@ -29,7 +29,7 @@ class Game(object):
         def hide_card(self):
             h = self.copy()
             h.hand = h.hand[1:]
-            return h 
+            return h
 
     def __init__(self, players, shoe_size=4, debug=False):
 #       print(chr(27) + "[2J")
@@ -38,11 +38,11 @@ class Game(object):
         self.shoe = card.Shoe(shoe_size)
         self.shoe.shuffle()
         self.state = [self.PlayerState(Dealer())] + [self.PlayerState(p) for p in players]
-        
+
         self.state[0].hand += self.shoe.deal_cards(2)
         for p in self.state[1:]:
             p.hand += self.shoe.deal_cards(2)
-        
+
         self.done = False
 
     def str_players_hands(self):
@@ -50,7 +50,7 @@ class Game(object):
         for p in self.state[1:]:
             o+="{:^45}".format(p)
         return o
-    
+
     def str_players_names(self):
         o = ""
         for p in self.state[1:]:
@@ -70,14 +70,14 @@ class Game(object):
         "{}\n"\
         "╚"+"═══════════════════════════════"*(len(self.state)-1)+"╝\n"\
         "{}\n"\
-        ).format(self.state[0].player.name, self.state[0].hand if self.done else ["**"]+self.state[0].hide_card().hand, self.str_players_hands(), self.str_players_names()) 
+        ).format(self.state[0].player.name, self.state[0].hand if self.done else ["**"]+self.state[0].hide_card().hand, self.str_players_hands(), self.str_players_names())
 
     def deal(self, num):
         return self.shoe.deal_cards(1)
 
     def take_bets(self):
-        if self.debug: 
-            print(self) 
+        if self.debug:
+            print(self)
         for p in self.state[1:]:
             bet = 0
             while bet <=0:
@@ -85,12 +85,11 @@ class Game(object):
             p.bet = bet
 
     def loop(self):
-        hits = 2 
-        while hits != 0 and not self.done:
+        while not self.done:
             hits = 0
             for p in self.state:
                 if p.bust:  #skip bust players
-                    continue    
+                    continue
 
                 if self.debug:
                     print("TURN: " + p.player.name)
@@ -105,17 +104,19 @@ class Game(object):
                 if action == "h":
                     p.hand+=self.deal(1)
                     hits +=1
-                
+
                 if card.value(p.hand) >= 21:
                     if card.value(p.hand) > 21:
                         p.bust = True
                     if isinstance(p.player, Dealer):
                         self.done = True
+            if hits == 0:
+                self.done = True
 
         self.done = True
-        return [p for p in self.state if 
-            not isinstance(p.player, Dealer) and 
-            not p.bust and 
+        return [p for p in self.state if
+            not isinstance(p.player, Dealer) and
+            not p.bust and
             (card.value(p.hand) >= card.value(self.state[0].hand) or self.state[0].bust)
             ]
 

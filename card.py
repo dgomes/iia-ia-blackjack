@@ -31,7 +31,8 @@ class Card(object):
         return False
 
 class Shoe(object):
-    #Represents a deck of cards.
+    #Represents one or more decks of cards use to
+    #take cards for players and dealer
 
     def __init__(self, number_decks=1):
         self.cards = []

@@ -29,6 +29,10 @@ class Card(object):
         if self.rank == 1:
             return True
         return False
+    def is_ten(self):
+        if self.rank >= 10:
+            return True
+        return False
 
 class Shoe(object):
     #Represents one or more decks of cards use to
@@ -76,6 +80,13 @@ def value(hand):    #TODO as deve valer 1 ou 11 conforme der mais jeito!
         return v+10 
     return v
 
+def blackjack(hand):
+    if len(hand) == 2 and hand[0].is_ace() and hand[1].is_ten():
+        return True
+    if len(hand) == 2 and hand[1].is_ace() and hand[0].is_ten():
+        return True
+    return False
+    
 if __name__ == '__main__':
     shoe = Shoe()
     shoe.shuffle()

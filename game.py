@@ -91,6 +91,8 @@ class Game(object):
 
     def loop(self):
         turn = 0
+        if card.blackjack(self.state[0].hand):  #if the dealer has blackjack there is no point in playing...
+            self.done = True
         while not self.done:
             turn += 1
             hits = 0
@@ -128,9 +130,10 @@ class Game(object):
 
         self.done = True
         return [p for p in self.state if
-            not isinstance(p.player, Dealer) and
-            not p.bust and
-            (card.value(p.hand) >= card.value(self.state[0].hand) or self.state[0].bust)
+            not isinstance(p.player, Dealer) and    #Dealer is not really a winner
+            not card.blackjack(self.state[0].hand) and  #If dealer gets blackjack no one wins
+            not p.bust and  #bust players can't win :)
+            (card.value(p.hand) >= card.value(self.state[0].hand) or self.state[0].bust)    #winners have more points then the dealer or the dealer has gone bust
             ]
 
     def payback(self, winners):

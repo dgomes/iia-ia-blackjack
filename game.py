@@ -122,9 +122,11 @@ class Game(object):
 
                 if card.value(p.hand) >= 21:
                     if card.value(p.hand) > 21:
-                        p.bust = True
+                        p.bust = True   
+                    else:
+                        p.done = True   #already has blackjack
                     if isinstance(p.player, Dealer):
-                        self.done = True
+                        self.done = True #game is hover we already have a blackjack
             if hits == 0:
                 self.done = True
 

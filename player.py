@@ -26,9 +26,9 @@ class Player(object):
 
 # re-implement all the next methods
     def debug_state(self, dealer, players):
-        print "Dealer: ", dealer, card.value(dealer.hand)
+        print "{:10s}: {:32s} = {}".format("Dealer", dealer.hand, card.value(dealer.hand))
         for p in players:
-            print p.player.name, p.hand, card.value(p.hand)
+            print "{:10s}: {:32s} = {}".format(p.player.name, p.hand, card.value(p.hand))
 
     def play(self, dealer, players):
         """ Calculates decision to take

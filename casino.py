@@ -8,7 +8,7 @@ if __name__ == '__main__':
 
     for i in range(100):
         print players
-        g = Game(players) 
+        g = Game(players, min_bet=1, max_bet=5) 
         #g = Game(players, debug=True)
         g.run()
 

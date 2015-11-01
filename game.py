@@ -119,7 +119,7 @@ class Game(object):
                         action = ""
                 
                 if action == "d":
-                    p.take_bet(self.state)
+                    p.take_bet(self.state,self.min_bet, self.max_bet)
                     p.done = True
 
                 if action in ["h", "d"]:

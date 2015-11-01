@@ -47,10 +47,6 @@ class Game(object):
         self.shoe.shuffle()
         self.state = [self.PlayerState(Dealer())] + [self.PlayerState(p) for p in players]
 
-        self.state[0].hand += self.shoe.deal_cards(2)
-        for p in self.state[1:]:
-            p.hand += self.shoe.deal_cards(2)
-
         self.done = False
 
     def str_players_hands(self):
@@ -90,9 +86,17 @@ class Game(object):
             p.take_bet(self.state)
 
     def loop(self):
+        
+        #deal initial cards
+        self.state[0].hand += self.shoe.deal_cards(2)
+        for p in self.state[1:]:
+            p.hand += self.shoe.deal_cards(2)
+
         turn = 0
         if card.blackjack(self.state[0].hand):  #if the dealer has blackjack there is no point in playing...
             self.done = True
+
+        #lets play 
         while not self.done:
             turn += 1
             hits = 0

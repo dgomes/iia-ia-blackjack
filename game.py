@@ -31,13 +31,13 @@ class Game(object):
             h = self.copy()
             h.hand = h.hand[1:]
             return h
-        def take_bet(self, state):
+        def take_bet(self, state, min_bet, max_bet):
             bet = 0
-            while bet <=0 or (bet>self.bet and self.bet!=0):      #bets can't be 0 nor can't they be more than double the existing bet
+            while not (min_bet <= bet <= max_bet) or (bet>self.bet and self.bet!=0):      #bets can't be 0 nor can't they be more than double the existing bet
                 bet = self.player.bet(state[0].hide_card(), state[1:])
             self.bet += bet
 
-    def __init__(self, players, shoe_size=4, debug=False, verbose=True):
+    def __init__(self, players, shoe_size=4, debug=False, verbose=True, min_bet=1, max_bet=10):
         if verbose:
     #       print(chr(27) + "[2J")
             print("-"*80)
@@ -46,7 +46,9 @@ class Game(object):
         self.shoe = card.Shoe(shoe_size)
         self.shoe.shuffle()
         self.state = [self.PlayerState(Dealer())] + [self.PlayerState(p) for p in players]
-
+        self.min_bet = min_bet
+        self.max_bet = max_bet
+    
         self.done = False
 
     def str_players_hands(self):
@@ -83,7 +85,7 @@ class Game(object):
         if self.debug:
             print(self)
         for p in self.state[1:]:
-            p.take_bet(self.state)
+            p.take_bet(self.state, self.min_bet, self.max_bet)
 
     def loop(self):
         

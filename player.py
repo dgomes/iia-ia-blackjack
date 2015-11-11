@@ -40,9 +40,10 @@ class Player(object):
         self.debug_state(dealer, players)
         return raw_input("(h)it (d)ouble or (s)tand  ")
 
-    def bet(self, dealer, players):
+    def bet(self, bet_rules, dealer, players):
         """ Calculates how much to bet
 
+            bet_rules - tuple: (minimum bet, maximum bet)
             dealer - state
             players - list of players state
             bet (int value)

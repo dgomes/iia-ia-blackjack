@@ -34,7 +34,7 @@ class Game(object):
         def take_bet(self, state, min_bet, max_bet):
             bet = 0
             while not (min_bet <= bet <= max_bet) or (bet>self.bet and self.bet!=0):      #bets can't be 0 nor can't they be more than double the existing bet
-                bet = self.player.bet(state[0].hide_card(), state[1:])
+                bet = self.player.bet((min_bet, max_bet), state[0].hide_card(), state[1:])
             self.bet += bet
 
     def __init__(self, players, shoe_size=4, debug=False, verbose=True, min_bet=1, max_bet=10):
@@ -48,7 +48,7 @@ class Game(object):
         self.state = [self.PlayerState(Dealer())] + [self.PlayerState(p) for p in players]
         self.min_bet = min_bet
         self.max_bet = max_bet
-    
+
         self.done = False
 
     def str_players_hands(self):
@@ -88,7 +88,7 @@ class Game(object):
             p.take_bet(self.state, self.min_bet, self.max_bet)
 
     def loop(self):
-        
+
         #deal initial cards
         self.state[0].hand += self.shoe.deal_cards(2)
         for p in self.state[1:]:
@@ -98,7 +98,7 @@ class Game(object):
         if card.blackjack(self.state[0].hand):  #if the dealer has blackjack there is no point in playing...
             self.done = True
 
-        #lets play 
+        #lets play
         while not self.done:
             turn += 1
             hits = 0
@@ -117,7 +117,7 @@ class Game(object):
                         action = p.player.play(self.state[0].hide_card(), self.state[1:])
                     if action == "d" and turn != 1:
                         action = ""
-                
+
                 if action == "d":
                     p.take_bet(self.state,self.min_bet, self.max_bet)
                     p.done = True
@@ -128,7 +128,7 @@ class Game(object):
 
                 if card.value(p.hand) >= 21:
                     if card.value(p.hand) > 21:
-                        p.bust = True   
+                        p.bust = True
                     else:
                         p.done = True   #already has blackjack
                     if isinstance(p.player, Dealer):

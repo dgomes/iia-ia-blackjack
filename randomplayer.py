@@ -14,17 +14,17 @@ class RandomPlayer(Player):
     def play(self, dealer, players):
         """ Calculates decision to take
             Must be either "h" or "s"
-            
+
             dealer - state
             players - list of players state
         """
         cmd = ["h", "s"]
         return cmd[random.randint(0,1)]
 
-    def bet(self, dealer, players):
+    def bet(self, bet_rules, dealer, players):
         """ Calculates how much to bet (int)
 
             dealer - state
             players - list of players state
         """
-        return 1 
+        return 1

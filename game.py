@@ -102,7 +102,7 @@ class Game(object):
         while not self.done:
             turn += 1
             hits = 0
-            for p in self.state:
+            for p in self.state[::-1]:
                 if p.bust or p.done or card.value(p.hand) == 21:  #skip bust players, players who have double down and players who already have blackjack!
                     continue
 

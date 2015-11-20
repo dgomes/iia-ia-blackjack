@@ -19,7 +19,9 @@ class Player(object):
 
 # MIGHT want to re-implement the next methods
 
-    def want_to_play(self):     #if you have to much money and jut want to watch, return False
+    def want_to_play(self, rules):     #if you have to much money and jut want to watch, return False
+                                        # rules contains a Game.Rules object with information on the game rules (min_bet, max_bet, shoe_size, etc)
+        print rules
         return True 
 
     def payback(self, prize):
@@ -45,7 +47,7 @@ class Player(object):
         self.debug_state(dealer, players)
         return raw_input("(h)it (d)ouble or (s)tand  ")
 
-    def bet(self, bet_rules, dealer, players):
+    def bet(self, dealer, players):
         """ Calculates how much to bet
 
             bet_rules - tuple: (minimum bet, maximum bet)

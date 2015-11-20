@@ -12,6 +12,13 @@ from player import Player
 BET_MULTIPLIER = 2
 
 class Game(object):
+    class Rules():
+        def __init__(self, shoe_size=4, min_bet=1, max_bet=10):
+            self.shoe_size = shoe_size
+            self.min_bet = min_bet
+            self.max_bet = max_bet
+        def __str__(self):
+            return "RULES\tMin bet: {}, Max bet: {}, Shoe size: {}".format(self.min_bet, self.max_bet, self.shoe_size)
     class PlayerState():
         def __init__(self, p):
             self.player = p
@@ -32,12 +39,12 @@ class Game(object):
             h = self.copy()
             h.hand = h.hand[1:]
             return h
-        def want_to_play(self):
-            return self.player.want_to_play()
-        def take_bet(self, state, min_bet, max_bet):
+        def want_to_play(self, rules):
+            return self.player.want_to_play(rules)
+        def take_bet(self, state, rules):
             bet = 0
-            while not (min_bet <= bet <= max_bet) or (bet>self.bet and self.bet!=0):      #bets can't be 0 nor can't they be more than double the existing bet
-                bet = self.player.bet((min_bet, max_bet), state[0].hide_card(), state[1:])
+            while not (rules.min_bet <= bet <= rules.max_bet) or (bet<>self.bet and self.bet!=0):      #bets can't be 0 and double down means double down 
+                bet = self.player.bet(state[0].hide_card(), state[1:])
             self.bet += bet
 
     def __init__(self, players, shoe_size=4, debug=False, verbose=True, min_bet=1, max_bet=10):
@@ -46,11 +53,10 @@ class Game(object):
             print("-"*80)
         self.verbose = verbose
         self.debug = debug
+        self.rules = self.Rules(shoe_size=shoe_size, min_bet=min_bet, max_bet=max_bet)
         self.shoe = card.Shoe(shoe_size)
         self.shoe.shuffle()
         self.state = [self.PlayerState(Dealer())] + [self.PlayerState(p) for p in players]
-        self.min_bet = min_bet
-        self.max_bet = max_bet
 
         self.done = False
 
@@ -88,8 +94,8 @@ class Game(object):
         if self.debug:
             print(self)
         for p in self.state[1:]:
-            if p.want_to_play():
-                p.take_bet(self.state, self.min_bet, self.max_bet)
+            if p.want_to_play(self.rules):
+                p.take_bet(self.state, self.rules)
             else:
                 p.watch = True
 
@@ -126,7 +132,7 @@ class Game(object):
                         action = ""
 
                 if action == "d":
-                    p.take_bet(self.state,self.min_bet, self.max_bet)
+                    p.take_bet(self.state,self.rules)
                     p.done = True
 
                 if action in ["h", "d"]:

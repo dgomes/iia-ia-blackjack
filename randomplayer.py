@@ -21,7 +21,7 @@ class RandomPlayer(Player):
         cmd = ["h", "s"]
         return cmd[random.randint(0,1)]
 
-    def bet(self, bet_rules, dealer, players):
+    def bet(self, dealer, players):
         """ Calculates how much to bet (int)
 
             dealer - state

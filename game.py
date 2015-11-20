@@ -6,7 +6,7 @@ __version__ = "0.1"
 
 import copy
 import card
-import shoe
+from shoe import Shoe
 from dealer import Dealer
 from player import Player
 
@@ -49,14 +49,16 @@ class Game(object):
                 bet = self.player.bet(state[0].hide_card(), state[1:])
             self.bet += bet
 
-    def __init__(self, players, shoe_size=4, debug=False, verbose=True, min_bet=1, max_bet=10):
+    def __init__(self, players, shoe_size=4, debug=False, verbose=True, min_bet=1, max_bet=10, shoe=None):
         if verbose:
     #       print(chr(27) + "[2J")
             print("-"*80)
         self.verbose = verbose
         self.debug = debug
         self.rules = self.Rules(shoe_size=shoe_size, min_bet=min_bet, max_bet=max_bet)
-        self.shoe = shoe.Shoe(shoe_size)
+        self.shoe = Shoe(shoe_size)
+        if shoe != None:
+            self.shoe = shoe
         self.shoe.shuffle()
         self.state = [self.PlayerState(Dealer())] + [self.PlayerState(p) for p in players]
 

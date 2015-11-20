@@ -17,8 +17,9 @@ class Game(object):
             self.shoe_size = shoe_size
             self.min_bet = min_bet
             self.max_bet = max_bet
+            self.bet_multiplier = BET_MULTIPLIER
         def __str__(self):
-            return "RULES\tMin bet: {}, Max bet: {}, Shoe size: {}".format(self.min_bet, self.max_bet, self.shoe_size)
+            return "RULES\tMin bet: {}, Max bet: {}, Shoe size: {}, Bet multiplier: {}".format(self.min_bet, self.max_bet, self.shoe_size, self.bet_multiplier)
     class PlayerState():
         def __init__(self, p):
             self.player = p

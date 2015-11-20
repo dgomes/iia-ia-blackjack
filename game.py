@@ -6,6 +6,7 @@ __version__ = "0.1"
 
 import copy
 import card
+import shoe
 from dealer import Dealer
 from player import Player
 
@@ -55,7 +56,7 @@ class Game(object):
         self.verbose = verbose
         self.debug = debug
         self.rules = self.Rules(shoe_size=shoe_size, min_bet=min_bet, max_bet=max_bet)
-        self.shoe = card.Shoe(shoe_size)
+        self.shoe = shoe.Shoe(shoe_size)
         self.shoe.shuffle()
         self.state = [self.PlayerState(Dealer())] + [self.PlayerState(p) for p in players]
 

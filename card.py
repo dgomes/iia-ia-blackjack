@@ -34,47 +34,7 @@ class Card(object):
             return True
         return False
 
-class Shoe(object):
-    #Represents one or more decks of cards use to
-    #take cards for players and dealer
-
-    def __init__(self, number_decks=1):
-        self.cards = []
-        for i in range(number_decks):
-            self.cards += [Card(suit, rank) for suit in range(4) for rank in range(1,14)]
-
-    def __str__(self):
-        res = []
-        for card in self.cards:
-            res.append(str(card))
-        return '\n'.join(res)
-
-    def pop_card(self, i=-1):
-        """Removes and returns a card from the deck.
-
-        i: index of the card to pop; by default, pops the last card.
-        """
-        return self.cards.pop(i)
-
-    def shuffle(self):
-        """Shuffles the cards in this deck."""
-        random.shuffle(self.cards)
-
-    def sort(self):
-        """Sorts the cards in ascending order."""
-        self.cards.sort()
-
-    def deal_cards(self, num):
-        """Moves the given number of cards from the deck
-
-        num: integer number of cards to move
-        """
-        deal = []
-        for i in range(num):
-            deal.append(self.pop_card())
-        return deal
-
-def value(hand):    #TODO as deve valer 1 ou 11 conforme der mais jeito!
+def value(hand):    
     v = sum([c.value() for c in hand]) 
     if len([c for c in hand if c.is_ace()]) > 0 and v <= 11: #if there is an Ace and we don't bust by take the Ace as an eleven
         return v+10 

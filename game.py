@@ -89,7 +89,7 @@ class Game(object):
         "{}\n"\
         "╚"+"═══════════════════════════════"*(len(self.state)-1)+"╝\n"\
         "{}\n"\
-        ).format(self.state[0].player.name, self.state[0].hand if self.done else ["**"]+self.state[0].hide_card().hand, self.str_players_hands(), self.str_players_names())
+        ).format(self.state[0].player.name, self.state[0].hand if self.done else (["**"]+self.state[0].hide_card().hand if len(self.state[0].hand) else []), self.str_players_hands(), self.str_players_names())
 
     def deal(self, num):
         return self.shoe.deal_cards(1)
@@ -114,6 +114,7 @@ class Game(object):
         turn = 0
         if card.blackjack(self.state[0].hand):  #if the dealer has blackjack there is no point in playing...
             self.done = True
+            return [p for p in self.state if card.blackjack(p.hand)]
 
         #lets play
         while not self.done:

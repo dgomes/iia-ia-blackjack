@@ -1,4 +1,4 @@
-#encoding: utf8
+#encoding: utf8 
 import sys
 sys.path.insert(0,"..")
 from game import Game
@@ -12,10 +12,10 @@ if __name__ == '__main__':
     players = [TestPlayer("test",100)]
 
     print players
-    g = Game(players, debug=True, shoe=TestShoe([Card(0,1), Card(0,2), Card(1,1), Card(1,12)] )) 
+    g = Game(players, debug=True, shoe=TestShoe([Card(0,1), Card(0,12), Card(1,1), Card(1,12)] )) 
     g.run()
 
     print "OVERALL: ", players
-    if str(players) == "[test (99€)]":
+    if str(players) == "[test (100€)]":
         sys.exit(0) 
     sys.exit(1) 

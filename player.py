@@ -17,19 +17,24 @@ class Player(object):
     def __repr__(self):
         return self.__str__()
 
+# MIGHT want to re-implement the next methods
+
+    def want_to_play(self):     #if you have to much money and jut want to watch, return False
+        return True 
+
     def payback(self, prize):
         """ receives bet + premium
             or 0 if player lost
         """
         self.table = 0
         self.pocket += prize
-
-# re-implement all the next methods
+    
     def debug_state(self, dealer, players):
         print "{:10s}: {:32s} = {}".format("Dealer", dealer.hand, card.value(dealer.hand))
         for p in players:
             print "{:10s}: {:32s} = {}".format(p.player.name, p.hand, card.value(p.hand))
 
+# MANDATORY to re-implement all the next methods
     def play(self, dealer, players):
         """ Calculates decision to take
             Must be either "h", "d" or "s" - Hit, Double down or Stand

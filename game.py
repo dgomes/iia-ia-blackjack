@@ -19,6 +19,7 @@ class Game(object):
             self.hand = []
             self.bust = False
             self.done = False
+            self.watch = False
         def copy(self):
             return copy.deepcopy(self)
         def __str__(self):
@@ -31,6 +32,8 @@ class Game(object):
             h = self.copy()
             h.hand = h.hand[1:]
             return h
+        def want_to_play(self):
+            return self.player.want_to_play()
         def take_bet(self, state, min_bet, max_bet):
             bet = 0
             while not (min_bet <= bet <= max_bet) or (bet>self.bet and self.bet!=0):      #bets can't be 0 nor can't they be more than double the existing bet
@@ -85,14 +88,18 @@ class Game(object):
         if self.debug:
             print(self)
         for p in self.state[1:]:
-            p.take_bet(self.state, self.min_bet, self.max_bet)
+            if p.want_to_play():
+                p.take_bet(self.state, self.min_bet, self.max_bet)
+            else:
+                p.watch = True
 
     def loop(self):
 
         #deal initial cards
         self.state[0].hand += self.shoe.deal_cards(2)
         for p in self.state[1:]:
-            p.hand += self.shoe.deal_cards(2)
+            if not p.watch:
+                p.hand += self.shoe.deal_cards(2)
 
         turn = 0
         if card.blackjack(self.state[0].hand):  #if the dealer has blackjack there is no point in playing...
@@ -103,7 +110,7 @@ class Game(object):
             turn += 1
             hits = 0
             for p in self.state[::-1]:
-                if p.bust or p.done or card.value(p.hand) == 21:  #skip bust players, players who have double down and players who already have blackjack!
+                if p.watch or p.bust or p.done or card.value(p.hand) == 21:  #skip players watching, bust players, players who have double down and players who already have blackjack!
                     continue
 
                 if self.debug:
@@ -146,6 +153,8 @@ class Game(object):
 
     def payback(self, winners):
         for p in self.state[1:]:
+            if p.watch: #skip watchers
+                continue
             if p in winners and card.value(self.state[0].hand) == card.value(p.hand):
                 p.player.payback(0)  #bet is returned
             elif p in winners:

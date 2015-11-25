@@ -6,12 +6,21 @@ __version__ = "0.1"
 
 import copy
 import card
+from shoe import Shoe
 from dealer import Dealer
 from player import Player
 
 BET_MULTIPLIER = 2
 
 class Game(object):
+    class Rules():
+        def __init__(self, shoe_size=4, min_bet=1, max_bet=10):
+            self.shoe_size = shoe_size
+            self.min_bet = min_bet
+            self.max_bet = max_bet
+            self.bet_multiplier = BET_MULTIPLIER
+        def __str__(self):
+            return "RULES\tMin bet: {}, Max bet: {}, Shoe size: {}, Bet multiplier: {}".format(self.min_bet, self.max_bet, self.shoe_size, self.bet_multiplier)
     class PlayerState():
         def __init__(self, p):
             self.player = p
@@ -19,6 +28,7 @@ class Game(object):
             self.hand = []
             self.bust = False
             self.done = False
+            self.watch = False
         def copy(self):
             return copy.deepcopy(self)
         def __str__(self):
@@ -31,24 +41,27 @@ class Game(object):
             h = self.copy()
             h.hand = h.hand[1:]
             return h
-        def take_bet(self, state, min_bet, max_bet):
+        def want_to_play(self, rules):
+            return self.player.want_to_play(rules)
+        def take_bet(self, state, rules):
             bet = 0
-            while not (min_bet <= bet <= max_bet) or (bet>self.bet and self.bet!=0):      #bets can't be 0 nor can't they be more than double the existing bet
+            while not (rules.min_bet <= bet <= rules.max_bet) or (bet<>self.bet and self.bet!=0):      #bets can't be 0 and double down means double down 
                 bet = self.player.bet(state[0].hide_card(), state[1:])
             self.bet += bet
 
-    def __init__(self, players, shoe_size=4, debug=False, verbose=True, min_bet=1, max_bet=10):
+    def __init__(self, players, shoe_size=4, debug=False, verbose=True, min_bet=1, max_bet=10, shoe=None):
         if verbose:
     #       print(chr(27) + "[2J")
             print("-"*80)
         self.verbose = verbose
         self.debug = debug
-        self.shoe = card.Shoe(shoe_size)
+        self.rules = self.Rules(shoe_size=shoe_size, min_bet=min_bet, max_bet=max_bet)
+        self.shoe = Shoe(shoe_size)
+        if shoe != None:
+            self.shoe = shoe
         self.shoe.shuffle()
         self.state = [self.PlayerState(Dealer())] + [self.PlayerState(p) for p in players]
-        self.min_bet = min_bet
-        self.max_bet = max_bet
-    
+
         self.done = False
 
     def str_players_hands(self):
@@ -76,7 +89,7 @@ class Game(object):
         "{}\n"\
         "╚"+"═══════════════════════════════"*(len(self.state)-1)+"╝\n"\
         "{}\n"\
-        ).format(self.state[0].player.name, self.state[0].hand if self.done else ["**"]+self.state[0].hide_card().hand, self.str_players_hands(), self.str_players_names())
+        ).format(self.state[0].player.name, self.state[0].hand if self.done else (["**"]+self.state[0].hide_card().hand if len(self.state[0].hand) else []), self.str_players_hands(), self.str_players_names())
 
     def deal(self, num):
         return self.shoe.deal_cards(1)
@@ -85,25 +98,30 @@ class Game(object):
         if self.debug:
             print(self)
         for p in self.state[1:]:
-            p.take_bet(self.state, self.min_bet, self.max_bet)
+            if p.want_to_play(self.rules):
+                p.take_bet(self.state, self.rules)
+            else:
+                p.watch = True
 
     def loop(self):
-        
+
         #deal initial cards
         self.state[0].hand += self.shoe.deal_cards(2)
         for p in self.state[1:]:
-            p.hand += self.shoe.deal_cards(2)
+            if not p.watch:
+                p.hand += self.shoe.deal_cards(2)
 
         turn = 0
         if card.blackjack(self.state[0].hand):  #if the dealer has blackjack there is no point in playing...
             self.done = True
+            return [p for p in self.state if card.blackjack(p.hand)]
 
-        #lets play 
+        #lets play
         while not self.done:
             turn += 1
             hits = 0
-            for p in self.state:
-                if p.bust or p.done or card.value(p.hand) == 21:  #skip bust players, players who have double down and players who already have blackjack!
+            for p in self.state[::-1]:
+                if p.watch or p.bust or p.done or card.value(p.hand) == 21:  #skip players watching, bust players, players who have double down and players who already have blackjack!
                     continue
 
                 if self.debug:
@@ -118,9 +136,9 @@ class Game(object):
                     if action == "d" and turn != 1:
                         print("YOU CAN'T DOUBLE DOWN!!! double down is only available on the 1st turn")
                         action = ""
-                
+
                 if action == "d":
-                    p.take_bet(self.state,self.min_bet, self.max_bet)
+                    p.take_bet(self.state,self.rules)
                     p.done = True
 
                 if action in ["h", "d"]:
@@ -129,7 +147,7 @@ class Game(object):
 
                 if card.value(p.hand) >= 21:
                     if card.value(p.hand) > 21:
-                        p.bust = True   
+                        p.bust = True
                     else:
                         p.done = True   #already has blackjack
                     if isinstance(p.player, Dealer):
@@ -147,6 +165,8 @@ class Game(object):
 
     def payback(self, winners):
         for p in self.state[1:]:
+            if p.watch: #skip watchers
+                continue
             if p in winners and card.value(self.state[0].hand) == card.value(p.hand):
                 p.player.payback(0)  #bet is returned
             elif p in winners:

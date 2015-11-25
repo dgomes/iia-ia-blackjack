@@ -11,4 +11,4 @@ class StudentPlayer(Player):
         return "s"
 
     def bet(self, dealer, players):
-        return 1 
+        return 1

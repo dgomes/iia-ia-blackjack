@@ -14,7 +14,7 @@ class RandomPlayer(Player):
     def play(self, dealer, players):
         """ Calculates decision to take
             Must be either "h" or "s"
-            
+
             dealer - state
             players - list of players state
         """
@@ -27,4 +27,4 @@ class RandomPlayer(Player):
             dealer - state
             players - list of players state
         """
-        return 1 
+        return 1

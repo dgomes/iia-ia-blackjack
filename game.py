@@ -110,12 +110,13 @@ class Game(object):
                     print("TURN {}: {}".format(turn, p.player.name))
                     print(self)
                 action = ""
-                while action not in ["h", "s", "d"]:
+                while action not in ["h", "s", "d", "u"]:
                     if isinstance(p.player, Dealer):
                         action = p.player.play(self.state[0], self.state[1:])
                     else:
                         action = p.player.play(self.state[0].hide_card(), self.state[1:])
                     if action == "d" and turn != 1:
+                        print("YOU CAN'T DOUBLE DOWN!!! double down is only available on the 1st turn")
                         action = ""
                 
                 if action == "d":

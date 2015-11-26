@@ -114,7 +114,7 @@ class Game(object):
         turn = 0
         if card.blackjack(self.state[0].hand):  #if the dealer has blackjack there is no point in playing...
             self.done = True
-            return [p for p in self.state if card.blackjack(p.hand)]
+            return [p for p in self.state[1:] if card.blackjack(p.hand)]
 
         #lets play
         while not self.done:
@@ -161,6 +161,7 @@ class Game(object):
                 self.done = True
 
         self.done = True
+
         return [p for p in self.state if
             not isinstance(p.player, Dealer) and    #Dealer is not really a winner
             not card.blackjack(self.state[0].hand) and  #If dealer gets blackjack no one wins

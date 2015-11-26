@@ -29,7 +29,8 @@ class Player(object):
 
     def payback(self, prize):
         """ receives bet + premium
-            or 0 if player lost
+            of 0 if both player and dealer have black jack
+            or -bet if player lost
         """
         self.table = 0
         self.pocket += prize

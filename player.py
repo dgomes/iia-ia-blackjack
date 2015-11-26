@@ -22,7 +22,7 @@ class Player(object):
     def want_to_play(self, rules):     #if you have to much money and jut want to watch, return False
                                         # rules contains a Game.Rules object with information on the game rules (min_bet, max_bet, shoe_size, etc)
         print rules
-        return True 
+        return True
 
     def payback(self, prize):
         """ receives bet + premium
@@ -30,7 +30,7 @@ class Player(object):
         """
         self.table = 0
         self.pocket += prize
-    
+
     def debug_state(self, dealer, players):
         print "{:10s}: {:32s} = {}".format("Dealer", dealer.hand, card.value(dealer.hand))
         for p in players:
@@ -49,10 +49,10 @@ class Player(object):
 
     def bet(self, dealer, players):
         """ Calculates how much to bet
-
-            bet_rules - tuple: (minimum bet, maximum bet)
             dealer - state
             players - list of players state
+
+            returns:
             bet (int value)
         """
         self.debug_state(dealer, players)

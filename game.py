@@ -45,7 +45,7 @@ class Game(object):
             return self.player.want_to_play(rules)
         def take_bet(self, state, rules):
             bet = 0
-            while not (rules.min_bet <= bet <= rules.max_bet) or (bet<>self.bet and self.bet!=0):      #bets can't be 0 and double down means double down 
+            while (bet<>self.bet and self.bet!=0) or not (rules.min_bet <= bet <= rules.max_bet) :      #bets can't be 0 and double down means double down 
                 bet = self.player.bet(state[0].hide_card(), state[1:])
             self.bet += bet
 
@@ -114,7 +114,7 @@ class Game(object):
         turn = 0
         if card.blackjack(self.state[0].hand):  #if the dealer has blackjack there is no point in playing...
             self.done = True
-            return [p for p in self.state if card.blackjack(p.hand)]
+            return [p for p in self.state[1:] if card.blackjack(p.hand)]
 
         #lets play
         while not self.done:
@@ -128,13 +128,19 @@ class Game(object):
                     print("TURN {}: {}".format(turn, p.player.name))
                     print(self)
                 action = ""
-                while action not in ["h", "s", "d"]:
+                while action not in ["h", "s", "d", "u"]:
                     if isinstance(p.player, Dealer):
                         action = p.player.play(self.state[0], self.state[1:])
                     else:
                         action = p.player.play(self.state[0].hide_card(), self.state[1:])
                     if action == "d" and turn != 1:
+                        print("YOU CAN'T DOUBLE DOWN!!! double down is only available on the 1st turn")
                         action = ""
+
+                if action == "u":
+                    p.watch = True
+                    p.player.payback(-p.bet//2) #this means the player lost half his bet
+                    continue
 
                 if action == "d":
                     p.take_bet(self.state,self.rules)
@@ -150,17 +156,22 @@ class Game(object):
                     else:
                         p.done = True   #already has blackjack
                     if isinstance(p.player, Dealer):
-                        self.done = True #game is hover we already have a blackjack
+                        self.done = True #game is over we already have a blackjack
             if hits == 0:
                 self.done = True
 
         self.done = True
+
         return [p for p in self.state if
             not isinstance(p.player, Dealer) and    #Dealer is not really a winner
             not card.blackjack(self.state[0].hand) and  #If dealer gets blackjack no one wins
             not p.bust and  #bust players can't win :)
             (card.value(p.hand) >= card.value(self.state[0].hand) or self.state[0].bust)    #winners have more points then the dealer or the dealer has gone bust
             ]
+
+    def show_table(self):
+        for p in self.state[1:]:
+            p.player.show(self.state)
 
     def payback(self, winners):
         for p in self.state[1:]:
@@ -176,6 +187,7 @@ class Game(object):
     def run(self):
         self.take_bets()
         winners = self.loop()
+        self.show_table()
         self.payback(winners)
         if self.verbose:
             print(self)

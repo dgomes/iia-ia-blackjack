@@ -45,7 +45,7 @@ class Game(object):
             return self.player.want_to_play(rules)
         def take_bet(self, state, rules):
             bet = 0
-            while not (rules.min_bet <= bet <= rules.max_bet) or (bet<>self.bet and self.bet!=0):      #bets can't be 0 and double down means double down 
+            while (bet<>self.bet and self.bet!=0) or not (rules.min_bet <= bet <= rules.max_bet) :      #bets can't be 0 and double down means double down 
                 bet = self.player.bet(state[0].hide_card(), state[1:])
             self.bet += bet
 

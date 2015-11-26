@@ -18,6 +18,9 @@ class Player(object):
         return self.__str__()
 
 # MIGHT want to re-implement the next methods
+    def show(self, players): #will receive a list containing all the players in the table and respective hands. this method is called before payback and represents the end state
+        #example: print "SHOW:", {p.player.name: p.hand for p in players}
+        pass
 
     def want_to_play(self, rules):     #if you have to much money and jut want to watch, return False
                                         # rules contains a Game.Rules object with information on the game rules (min_bet, max_bet, shoe_size, etc)

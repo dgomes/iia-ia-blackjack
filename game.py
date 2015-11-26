@@ -169,6 +169,10 @@ class Game(object):
             (card.value(p.hand) >= card.value(self.state[0].hand) or self.state[0].bust)    #winners have more points then the dealer or the dealer has gone bust
             ]
 
+    def show_table(self):
+        for p in self.state[1:]:
+            p.player.show(self.state)
+
     def payback(self, winners):
         for p in self.state[1:]:
             if p.watch: #skip watchers
@@ -183,6 +187,7 @@ class Game(object):
     def run(self):
         self.take_bets()
         winners = self.loop()
+        self.show_table()
         self.payback(winners)
         if self.verbose:
             print(self)

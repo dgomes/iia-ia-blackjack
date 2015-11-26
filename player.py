@@ -39,13 +39,14 @@ class Player(object):
 # MANDATORY to re-implement all the next methods
     def play(self, dealer, players):
         """ Calculates decision to take
-            Must be either "h", "d" or "s" - Hit, Double down or Stand
+            Must be either "h", "d", "s" or "u" - Hit, Double down, Stand, S(u)rrender
             Hit -> player gets an extra card
             Double Down -> player can bet extra money (up to 100% of the initial bet) and a LAST extra card
             Stand -> player does not wish to make any move in the current turn
+            Surrender -> player receives back half of his bet
         """
         self.debug_state(dealer, players)
-        return raw_input("(h)it (d)ouble or (s)tand  ")
+        return raw_input("(h)it (d)ouble (s)tand or s(u)rrender ")
 
     def bet(self, dealer, players):
         """ Calculates how much to bet

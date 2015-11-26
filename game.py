@@ -137,6 +137,11 @@ class Game(object):
                         print("YOU CAN'T DOUBLE DOWN!!! double down is only available on the 1st turn")
                         action = ""
 
+                if action == "u":
+                    p.watch = True
+                    p.player.payback(-p.bet//2) #this means the player lost half his bet
+                    continue
+
                 if action == "d":
                     p.take_bet(self.state,self.rules)
                     p.done = True
@@ -151,7 +156,7 @@ class Game(object):
                     else:
                         p.done = True   #already has blackjack
                     if isinstance(p.player, Dealer):
-                        self.done = True #game is hover we already have a blackjack
+                        self.done = True #game is over we already have a blackjack
             if hits == 0:
                 self.done = True
 

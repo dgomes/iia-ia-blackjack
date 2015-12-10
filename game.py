@@ -45,7 +45,7 @@ class Game(object):
             return self.player.want_to_play(rules)
         def take_bet(self, state, rules):
             bet = 0
-            while (bet<>self.bet and self.bet!=0) or not (rules.min_bet <= bet <= rules.max_bet) :      #bets can't be 0 and double down means double down 
+            while (bet<>self.bet and self.bet!=0) or not (rules.min_bet <= bet <= rules.max_bet) :      #bets can't be 0 and double down means double down
                 bet = self.player.bet(state[0].hide_card(), state[1:])
             self.bet += bet
 
@@ -165,6 +165,7 @@ class Game(object):
         return [p for p in self.state if
             not isinstance(p.player, Dealer) and    #Dealer is not really a winner
             not card.blackjack(self.state[0].hand) and  #If dealer gets blackjack no one wins
+            not p.watch and  #players watching can't win :)
             not p.bust and  #bust players can't win :)
             (card.value(p.hand) >= card.value(self.state[0].hand) or self.state[0].bust)    #winners have more points then the dealer or the dealer has gone bust
             ]

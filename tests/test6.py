@@ -13,6 +13,7 @@ class TestPlayer(Player):
         self.default_bet = default_bet
 
     def play(self, dealer, players):
+        print "STAND"
         return "s"
 
     def bet(self, dealer, players):

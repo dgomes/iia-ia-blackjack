@@ -13,10 +13,11 @@ class TestPlayer(Player):
         self.default_bet = default_bet
 
     def play(self, dealer, players):
+        print "SURRENDER"
         return "u"
 
     def bet(self, dealer, players):
-        return 1
+        return 4 
 
 if __name__ == '__main__':
 

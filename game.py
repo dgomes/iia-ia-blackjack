@@ -139,7 +139,6 @@ class Game(object):
 
                 if action == "u":
                     p.watch = True
-                    p.player.payback(-p.bet//2) #this means the player lost half his bet
                     continue
 
                 if action == "d":
@@ -176,7 +175,11 @@ class Game(object):
 
     def payback(self, winners):
         for p in self.state[1:]:
-            if p.watch: #skip watchers
+            if p.watch:
+                #check if player surrendered
+                if p.bet > 0:
+                    p.player.payback(-p.bet//2) #this means the player lost half his bet
+                #skip watchers
                 continue
             if p in winners and card.value(self.state[0].hand) == card.value(p.hand):
                 p.player.payback(0)  #bet is returned

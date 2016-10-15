@@ -24,7 +24,7 @@ class Player(object):
 
     def want_to_play(self, rules):     #if you have to much money and jut want to watch, return False
                                         # rules contains a Game.Rules object with information on the game rules (min_bet, max_bet, shoe_size, etc)
-        print rules
+        print(rules)
         return True
 
     def payback(self, prize):
@@ -36,9 +36,9 @@ class Player(object):
         self.pocket += prize
 
     def debug_state(self, dealer, players):
-        print "{:10s}: {:32s} = {}".format("Dealer", dealer.hand, card.value(dealer.hand))
+        print("{:10s}: {!s:32s} = {}".format("Dealer", dealer.hand, card.value(dealer.hand)))
         for p in players:
-            print "{:10s}: {:32s} = {}".format(p.player.name, p.hand, card.value(p.hand))
+            print("{:10s}: {!s:32s} = {}".format(p.player.name, p.hand, card.value(p.hand)))
 
 # MANDATORY to re-implement all the next methods
     def play(self, dealer, players):
@@ -50,7 +50,7 @@ class Player(object):
             Surrender -> player receives back half of his bet
         """
         self.debug_state(dealer, players)
-        return raw_input("(h)it (d)ouble (s)tand or s(u)rrender ")
+        return input("(h)it (d)ouble (s)tand or s(u)rrender ")
 
     def bet(self, dealer, players):
         """ Calculates how much to bet
@@ -62,8 +62,8 @@ class Player(object):
         """
         self.debug_state(dealer, players)
         try:
-            bet = int(raw_input("bet: "))
-        except Exception, e:
+            bet = int(input("bet: "))
+        except Exception as e:
             bet = 1
         self.table = bet
         return bet

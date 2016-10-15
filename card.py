@@ -51,5 +51,5 @@ if __name__ == '__main__':
     shoe = Shoe()
     shoe.shuffle()
 
-    print shoe.deal_cards(2)
+    print(shoe.deal_cards(2))
 

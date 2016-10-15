@@ -12,6 +12,8 @@ class Dealer(Player):
         self.name = "Dealer"
     def __str__(self):
         return self.name
+    def __repr__(self):
+        return self.__str__()
 
     def play(self, dealer, players):
         if card.value(dealer.hand) < 17:

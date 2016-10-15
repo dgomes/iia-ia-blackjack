@@ -7,9 +7,9 @@ if __name__ == '__main__':
     players = [Player("Human",100)]
 
     for i in range(100):
-        print players
+        print(players)
         g = Game(players, min_bet=1, max_bet=5) 
         #g = Game(players, debug=True)
         g.run()
 
-    print "OVERALL: ", players
+    print("OVERALL: ", players)

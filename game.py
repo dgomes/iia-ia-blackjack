@@ -45,7 +45,7 @@ class Game(object):
             return self.player.want_to_play(rules)
         def take_bet(self, state, rules):
             bet = 0
-            while (bet<>self.bet and self.bet!=0) or not (rules.min_bet <= bet <= rules.max_bet) :      #bets can't be 0 and double down means double down
+            while (bet!=self.bet and self.bet!=0) or not (rules.min_bet <= bet <= rules.max_bet) :      #bets can't be 0 and double down means double down
                 bet = self.player.bet(state[0].hide_card(), state[1:])
             self.bet += bet
 
@@ -67,26 +67,26 @@ class Game(object):
     def str_players_hands(self):
         o = ""
         for p in self.state[1:]:
-            o+="{:^45}".format(p)
+            o+="{!s:^45}".format(p)
         return o
 
     def str_players_names(self):
         o = ""
         for p in self.state[1:]:
-            o+="{:^35}".format(p.player)
+            o+="{!s:^35}".format(p.player)
         return o
 
     def __str__(self):
         return (\
         "{:^30}\n"\
         "╔"+"═══════════════════════════════"*(len(self.state)-1)+"╗\n"\
-        "{:^45}\n"\
+        "{!s:^45}\n"\
         "                         \n"\
         "                         \n"\
         "                         \n"\
         "                         \n"\
         "                         \n"\
-        "{}\n"\
+        "{!s}\n"\
         "╚"+"═══════════════════════════════"*(len(self.state)-1)+"╝\n"\
         "{}\n"\
         ).format(self.state[0].player.name, self.state[0].hand if self.done else (["**"]+self.state[0].hide_card().hand if len(self.state[0].hand) else []), self.str_players_hands(), self.str_players_names())

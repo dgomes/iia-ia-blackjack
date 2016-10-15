@@ -13,7 +13,7 @@ class TestPlayer(Player):
         self.default_bet = default_bet
 
     def play(self, dealer, players):
-        print "STAND"
+        print("STAND")
         return "s"
 
     def bet(self, dealer, players):
@@ -23,11 +23,11 @@ if __name__ == '__main__':
 
     players = [TestPlayer("test",100)]
 
-    print players
+    print(players)
     g = Game(players, debug=True, shoe=TestShoe([Card(3,8), Card(1,10), Card(1,13), Card(2,3), Card(3,9)] ))
     g.run()
 
-    print "OVERALL: ", players
+    print("OVERALL: ", players)
     if str(players) == "[test (100€)]":
         sys.exit(0)
     sys.exit(1)

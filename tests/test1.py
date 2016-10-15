@@ -21,11 +21,11 @@ if __name__ == '__main__':
 
     players = [TestPlayer("test",100)]
 
-    print players
+    print(players)
     g = Game(players, debug=True, shoe=TestShoe([Card(0,1), Card(0,2), Card(1,1), Card(1,12)] )) 
     g.run()
 
-    print "OVERALL: ", players
+    print("OVERALL: ", players)
     if str(players) == "[test (99€)]":
         sys.exit(0) 
     sys.exit(1) 

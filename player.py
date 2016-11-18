@@ -36,7 +36,7 @@ class Player(object):
         self.pocket += prize
 
     def debug_state(self, dealer, players):
-        print("{:10s}: {!s:32s} = {}".format("Dealer", dealer.hand, card.value(dealer.hand)))
+        print("{:10s}: {!s:32s} = {}".format("Dealer", ['🎴 '] + dealer.hand, card.value(dealer.hand)))
         for p in players:
             print("{:10s}: {!s:32s} = {}".format(p.player.name, p.hand, card.value(p.hand)))
 
